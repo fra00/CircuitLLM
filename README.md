@@ -4,6 +4,8 @@ Editor schematico web con **canvas interattivo**, **auto-layout ELK**, integrazi
 
 Genera schemi elettrici da linguaggio naturale, modifica manualmente componenti e connessioni, salva il progetto con memoria compatta del contesto e export verso KiCad.
 
+**Demo online:** [https://circuitllm.netlify.app/](https://circuitllm.netlify.app/)
+
 ![Panoramica applicazione](docs/screenshots/01-overview.png)
 
 ## Funzionalità
@@ -67,11 +69,35 @@ npm run test:coverage
 
 ### Qualità e CI
 
-- **Pre-push locale** (Husky): `git push` esegue `npm test` e viene bloccato se i test falliscono
+- **Pre-push locale** (Husky): ogni `git push` esegue **tutti** gli unit test (`npm test`). Se anche uno fallisce, la push viene **rifiutata**.
 - **Pre-commit**: esegue `npm run lint`
 - **GitHub Actions**: su push/PR verso `main` gira lint + test + build
+- Non usare `git push --no-verify` per saltare i controlli
+
+Su GitHub, in *Settings → Branches → Branch protection* su `main`, abilita **Require status checks** e seleziona il check `Lint, test, build` così anche push forzate/CI fallite non entrano in main.
 
 Repository: [github.com/fra00/CircuitLLM](https://github.com/fra00/CircuitLLM)
+
+## Pubblicazione su Netlify
+
+L’app è pubblicata su Netlify:
+
+**https://circuitllm.netlify.app/**
+
+Deploy automatico dal branch `main` del repository GitHub. Impostazioni build:
+
+| Campo | Valore |
+|--------|--------|
+| Build command | `npm run build` |
+| Publish directory | `dist` |
+| Node.js | `20` o `22` |
+
+In locale puoi riprodurre la build di produzione con:
+
+```powershell
+npm run build
+npm run preview
+```
 
 ## Guida rapida
 
