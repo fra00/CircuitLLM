@@ -138,7 +138,7 @@ Al reload, la memoria viene reiniettata nel prompt di sistema.
 |---|---|---|
 | OpenAI | `gpt-4o-mini` | Sì |
 | Anthropic | `claude-sonnet-4-20250514` | Sì |
-| Gemini | `gemini-3-flash-preview` | Sì |
+| Gemini | `gemini-3.1-flash-lite` | Sì |
 | LM Studio | locale | No |
 
 Le impostazioni LLM restano nel browser (`localStorage`).

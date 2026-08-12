@@ -66,9 +66,9 @@ describe('llmStore', () => {
   })
 
   it('setConfig merges and persists config', () => {
-    useLlmStore.getState().setConfig({ provider: 'gemini', model: 'gemini-3-flash-preview' })
+    useLlmStore.getState().setConfig({ provider: 'gemini', model: 'gemini-3.1-flash-lite' })
     expect(useLlmStore.getState().config.provider).toBe('gemini')
-    expect(useLlmStore.getState().config.model).toBe('gemini-3-flash-preview')
+    expect(useLlmStore.getState().config.model).toBe('gemini-3.1-flash-lite')
     expect(localStorage.getItem('circuitllm.llm-config')).toContain('gemini')
   })
 
