@@ -1,1 +1,23 @@
+#!/usr/bin/env sh
+# Blocca git push se la suite unit test non e' tutta verde.
+# Bypass vietati nel flusso normale: non usare --no-verify ne' HUSKY=0.
+
+echo ""
+echo "▶ pre-push: esecuzione unit test (npm test)..."
+echo ""
+
 npm test
+status=$?
+
+if [ "$status" -ne 0 ]; then
+  echo ""
+  echo "✖ PUSH BLOCCATA: i test sono falliti (exit $status)."
+  echo "  Correggi i test con 'npm test' e riprova. Non usare --no-verify."
+  echo ""
+  exit "$status"
+fi
+
+echo ""
+echo "✔ pre-push: tutti i test sono passati — push consentita."
+echo ""
+exit 0
