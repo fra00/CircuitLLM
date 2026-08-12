@@ -45,7 +45,7 @@ export const PRESETS: Record<LlmProviderId, ProviderPreset> = {
     id: 'gemini',
     label: 'Gemini (Google)',
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/',
-    defaultModel: 'gemini-3-flash-preview',
+    defaultModel: 'gemini-3.1-flash-lite',
     requiresKey: true,
     keyPlaceholder: 'AIza...',
     hint: 'API key di Google AI Studio (aistudio.google.com).',

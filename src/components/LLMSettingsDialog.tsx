@@ -20,6 +20,7 @@ export function LLMSettingsDialog({ open, onClose }: LLMSettingsDialogProps) {
     const next = PRESETS[provider]
     setConfig({
       provider,
+      // Default solo se il campo modello e' vuoto: e' una proposta, non un vincolo.
       model: config.model || next.defaultModel,
       baseUrl: '',
       apiKey: next.requiresKey ? config.apiKey : '',

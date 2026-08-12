@@ -141,7 +141,7 @@ Se `npm` non e' risolto, usare:
 
 ## Note sui provider LLM
 
-- Default Gemini richiesto dal progetto: `gemini-3-flash-preview` (`src/data/providerPresets.ts`).
+- Default Gemini suggerito (placeholder settings): `gemini-3.1-flash-lite` (`src/data/providerPresets.ts`). Non e' un vincolo: l'utente puo' usare qualsiasi modello Gemini.
 - LM Studio usa endpoint OpenAI-compatible locale.
 - Gestire errori provider con messaggi leggibili (`result.error`) e raw opzionale.
 

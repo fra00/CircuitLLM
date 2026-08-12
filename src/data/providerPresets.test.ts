@@ -11,8 +11,8 @@ describe('providerPresets', () => {
     ])
   })
 
-  it('uses gemini-3-flash-preview as Gemini default', () => {
-    expect(PRESETS.gemini.defaultModel).toBe('gemini-3-flash-preview')
+  it('uses gemini-3.1-flash-lite as Gemini default', () => {
+    expect(PRESETS.gemini.defaultModel).toBe('gemini-3.1-flash-lite')
   })
 
   it('requires API keys only for cloud providers', () => {
