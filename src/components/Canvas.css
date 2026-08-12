@@ -1,0 +1,56 @@
+.canvas-shell {
+  width: 100%;
+  height: 100%;
+}
+
+.canvas-panel__button {
+  padding: 6px 12px;
+  border: 1px solid #1e3a5f;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #1e3a5f;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background: #eef3f8;
+  }
+}
+
+.canvas-panel__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.canvas-panel__add {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.canvas-panel__select {
+  border: 1px solid #1e3a5f;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #1e3a5f;
+  height: 31px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.canvas-panel__error {
+  margin-top: 6px;
+  max-width: 380px;
+  padding: 8px;
+  background: #fdecea;
+  border: 1px solid #d32f2f;
+  border-radius: 5px;
+  color: #b71c1c;
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  font-size: 10px;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,60 @@
+.schematic-edge {
+  stroke: #1e3a5f;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  transition: stroke 0.12s ease, stroke-width 0.12s ease, filter 0.12s ease;
+}
+
+.schematic-edge--selected {
+  stroke: #1565c0;
+  stroke-width: 3.2;
+  filter: drop-shadow(0 0 4px rgba(21, 101, 192, 0.55));
+}
+
+.schematic-edge__label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 6px;
+  background: #fff8e1;
+  border: 1px solid #b3541e;
+  border-radius: 4px;
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: #b3541e;
+  pointer-events: all;
+  white-space: nowrap;
+  transition: background 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.schematic-edge__label--selected {
+  background: #e3f2fd;
+  border: 2px solid #1565c0;
+  color: #0d47a1;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.25);
+  z-index: 2;
+}
+
+.schematic-edge__delete {
+  opacity: 0;
+  padding: 0 4px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: #b3541e;
+  font-size: 11px;
+  line-height: 14px;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+
+  &:hover {
+    background: #b3541e;
+    color: #ffffff;
+  }
+}
+
+.schematic-edge__label:hover .schematic-edge__delete {
+  opacity: 1;
+}

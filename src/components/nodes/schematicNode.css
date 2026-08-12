@@ -1,0 +1,234 @@
+.schematic-node {
+  min-width: 180px;
+  background: #ffffff;
+  border: 1.5px solid #1e3a5f;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 11px;
+  user-select: none;
+}
+
+.schematic-node__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #1e3a5f;
+  color: #ffffff;
+  border-radius: 4px 4px 0 0;
+}
+
+.schematic-node__ref {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.schematic-node__edit {
+  display: grid;
+  grid-template-columns: 74px 1fr auto auto;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
+}
+
+.schematic-node__edit input {
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 10px;
+  padding: 0 6px;
+}
+
+.schematic-node__edit input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.schematic-node__edit button {
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.schematic-node__edit-btn {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 9px;
+  line-height: 1;
+  padding: 3px 6px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.schematic-node__type {
+  font-size: 9px;
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.schematic-node__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.schematic-node__remove {
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 9px;
+  line-height: 1;
+  padding: 3px 6px;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(211, 47, 47, 0.9);
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+.schematic-node__label {
+  padding: 3px 8px 0;
+  font-weight: 600;
+  color: #1e3a5f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.schematic-node__value {
+  padding: 0 8px;
+  color: #b3541e;
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  font-weight: 600;
+}
+
+.schematic-node__pins {
+  padding: 4px 0 6px;
+}
+
+.schematic-node__addpin-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 6px 0;
+}
+
+.schematic-node__addpin-side {
+  flex: 1;
+  border: 1px dashed rgba(30, 58, 95, 0.65);
+  border-radius: 4px;
+  background: transparent;
+  padding: 2px 6px;
+  color: #1e3a5f;
+  font-weight: 600;
+  font-size: 10px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &:hover {
+    background: rgba(30, 58, 95, 0.08);
+  }
+}
+
+.schematic-node__addpin {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 0 6px 8px;
+}
+
+.schematic-node__pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 1px 6px;
+  line-height: 16px;
+}
+
+.schematic-node__pin--left {
+  flex-direction: row;
+}
+
+.schematic-node__pin--right {
+  flex-direction: row-reverse;
+}
+
+.schematic-node__pin-label {
+  color: #2c3e50;
+  white-space: nowrap;
+}
+
+.schematic-node__netname {
+  font-family: 'Cascadia Mono', Consolas, monospace;
+  font-size: 9px;
+  color: #7f8c9b;
+  max-width: 70px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
+.schematic-node__pin--left .schematic-node__netname {
+  display: none;
+}
+
+.schematic-node__pin-remove {
+  opacity: 0;
+  padding: 0 5px;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: #d32f2f;
+  font-size: 12px;
+  line-height: 14px;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+
+  &:hover {
+    background: #d32f2f;
+    color: #ffffff;
+  }
+}
+
+.schematic-node__pin:hover .schematic-node__pin-remove {
+  opacity: 1;
+}
+
+.schematic-node__handle {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+}
+
+.schematic-node__handle.pin--power {
+  background: #d32f2f;
+}
+
+.schematic-node__handle.pin--signal-in {
+  background: #1976d2;
+}
+
+.schematic-node__handle.pin--signal-out {
+  background: #2e7d32;
+}
