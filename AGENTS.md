@@ -49,7 +49,8 @@ Non considerare completato un task che tocca comportamento utente o API interne 
    - Se tocchi logica coperta da test esistenti, verifica che passino; se aggiungi comportamento nuovo, aggiungi o estendi un `*.test.ts` nello stesso modulo.
    - Fixture condivisa: `src/test/fixtures.ts` (`makeTestCircuit()`).
    - Non considerare il task completato con test falliti o suite non eseguita.
-   - Hook locale: `.husky/pre-push` esegue `npm test` e blocca la push se fallisce.
+   - Hook locale: `.husky/pre-push` esegue `npm test` e **blocca la push** se anche un solo test fallisce.
+   - Non usare `git push --no-verify` ne' `HUSKY=0` per saltare i test.
    - CI remota: `.github/workflows/ci.yml` (lint + test + build) su push/PR.
 
 7. Mantieni la documentazione allineata al codice.
@@ -150,6 +151,7 @@ Se `npm` non e' risolto, usare:
 - Non fare reset/revert distruttivi del repository.
 - Non cambiare comportamento di serializzazione JSON senza testare almeno un caso reale (preferire un caso in `projectIO.test.ts` o `validate.test.ts`).
 - Non chiudere modifiche a logica core senza aver eseguito `npm test`.
+- Non fare push con `--no-verify` o `HUSKY=0` per aggirare i test.
 - Non mergiare feature user-facing senza aggiornare la documentazione pertinente.
 - Non lasciare README o AGENTS.md in contraddizione con il comportamento reale dell'app.
 
