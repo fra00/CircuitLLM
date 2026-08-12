@@ -7,6 +7,8 @@ import { useCircuitStore } from './store/circuitStore'
 import { useLlmStore } from './store/llmStore'
 import { buildDeltaContext } from './utils/diff'
 import { downloadKiCadNetlist } from './utils/kicadExport'
+import { downloadLlmCircuitMarkdown } from './utils/llmExport'
+import { downloadSchematicPng } from './utils/pngExport'
 import { downloadProjectFile, readProjectFile } from './utils/projectIO'
 import {
   PALETTE_LABELS,
@@ -36,6 +38,7 @@ function App() {
   const [projectMessage, setProjectMessage] = useState<string | null>(null)
   const [includeContext, setIncludeContext] = useState(loadIncludeContextPreference)
   const [savingProject, setSavingProject] = useState(false)
+  const [exportingPng, setExportingPng] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const notifications = useCircuitStore((state) => state.notifications)
   const circuit = useCircuitStore((state) => state.circuit)
@@ -47,6 +50,8 @@ function App() {
   const loadMemory = useLlmStore((state) => state.loadMemory)
   const resetSessionMemory = useLlmStore((state) => state.resetSessionMemory)
   const prepareMemoryForSave = useLlmStore((state) => state.prepareMemoryForSave)
+  const memory = useLlmStore((state) => state.memory)
+  const goal = useLlmStore((state) => state.goal)
 
   const pendingContext = buildDeltaContext(notifications)
 
@@ -81,6 +86,20 @@ function App() {
       setProjectMessage(`Errore salvataggio: ${message}`)
     } finally {
       setSavingProject(false)
+    }
+  }
+
+  const handleExportPng = async () => {
+    setExportingPng(true)
+    setProjectMessage(null)
+    try {
+      await downloadSchematicPng()
+      setProjectMessage(`PNG esportato: ${circuit.circuit_name}`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      setProjectMessage(`Errore export PNG: ${message}`)
+    } finally {
+      setExportingPng(false)
     }
   }
 
@@ -158,6 +177,28 @@ function App() {
             onClick={() => downloadKiCadNetlist(circuit)}
           >
             Export KiCad (.net)
+          </button>
+          <button
+            type="button"
+            className="app-shell__export"
+            onClick={() =>
+              downloadLlmCircuitMarkdown(circuit, {
+                goal: memory?.goal || goal,
+                memorySummary: memory?.summary,
+              })
+            }
+            title="Esporta descrizione topologica Markdown pensata per LLM / firmware"
+          >
+            Export LLM (.md)
+          </button>
+          <button
+            type="button"
+            className="app-shell__export"
+            onClick={() => void handleExportPng()}
+            disabled={exportingPng}
+            title="Esporta lo schema completo come immagine PNG"
+          >
+            {exportingPng ? 'Export PNG...' : 'Export PNG'}
           </button>
           <div className="app-shell__menu-wrap">
             <button

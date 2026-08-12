@@ -20,6 +20,8 @@ Genera schemi elettrici da linguaggio naturale, modifica manualmente componenti 
 - **Salva / Carica progetto** (`.circuitllm.json`)
 - **Memoria progetto opzionale** con compaction LLM incrementale
 - **Export KiCad** netlist (`.net`)
+- **Export LLM** Markdown topologico (BOM, pin map, nets) per altri LLM / firmware
+- **Export PNG** dello schema completo (viewport React Flow)
 
 ## Screenshot
 
@@ -158,6 +160,25 @@ Al reload, la memoria viene reiniettata nel prompt di sistema.
 
 > Nota: l'export produce una **netlist**, non un file schematico `.kicad_sch` completo.
 
+### 6. Export PNG
+
+**Export PNG** scarica un’immagine dello schema completo (tutti i componenti e le wire), indipendentemente dallo zoom/pan corrente. Controlli, MiniMap e pannelli UI restano fuori dall’immagine.
+
+> Nota tecnica: l’export usa `html-to-image@1.11.11` (versione fissata): le release successive hanno un bug noto che omette i collegamenti SVG.
+
+### 7. Export LLM (.md)
+
+**Export LLM (.md)** produce un Markdown **topologico** pensato per un altro LLM (es. generazione firmware):
+
+- goal / memoria progetto (se presenti)
+- BOM componenti
+- pin map (`componente.pin → net`)
+- reti con endpoint espliciti (`U1.D4 ↔ M1.PWR1`)
+- hint per mappare GPIO in codice
+- blocco JSON della stessa topologia
+
+File scaricato: `<nome>.llm.md`.
+
 ## Provider LLM supportati
 
 | Provider | Default model | API key |
@@ -283,6 +304,8 @@ Copertura attuale (aree critiche):
 - conversione circuito → graph (`src/utils/circuitToGraph.ts`)
 - layout ELK (`src/utils/elkLayout.ts`)
 - export KiCad (`src/utils/kicadExport.ts`)
+- export PNG (`src/utils/pngExport.ts`)
+- export LLM Markdown (`src/utils/llmExport.ts`)
 - palette / preset / sample (`src/data/`)
 - store circuito e LLM (`src/store/`)
 
