@@ -78,6 +78,8 @@ Suite in `src/**/*.test.ts`. Aree coperte:
 | Graph React Flow | `src/utils/circuitToGraph.test.ts` |
 | Layout ELK | `src/utils/elkLayout.test.ts` |
 | Export KiCad | `src/utils/kicadExport.test.ts` |
+| Export PNG | `src/utils/pngExport.test.ts` |
+| Export LLM Markdown | `src/utils/llmExport.test.ts` |
 | Palette componenti | `src/data/componentPalette.test.ts` |
 | Provider presets | `src/data/providerPresets.test.ts` |
 | Sample circuit | `src/data/sampleCircuit.test.ts` |

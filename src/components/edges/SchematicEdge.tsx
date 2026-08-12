@@ -50,6 +50,12 @@ function SchematicEdgeComponent(props: EdgeProps) {
       <BaseEdge
         path={path}
         className={selected ? 'schematic-edge schematic-edge--selected' : 'schematic-edge'}
+        style={{
+          // Inline stroke so PNG export (html-to-image) keeps wires even if
+          // cloned CSS classes are incomplete.
+          stroke: selected ? '#1565c0' : '#1e3a5f',
+          strokeWidth: selected ? 3.2 : 1.6,
+        }}
         markerEnd={props.markerEnd}
         interactionWidth={24}
       />

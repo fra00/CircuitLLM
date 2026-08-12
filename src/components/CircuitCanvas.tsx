@@ -16,6 +16,7 @@ import {
 import '@xyflow/react/dist/style.css'
 import { SchematicNode } from './nodes/SchematicNode'
 import { SchematicEdge } from './edges/SchematicEdge'
+import { SchematicPngExportBridge } from './SchematicPngExportBridge'
 import { buildInitialGraph } from '../utils/circuitToGraph'
 import { runElkLayout } from '../utils/elkLayout'
 import { useCircuitStore } from '../store/circuitStore'
@@ -195,6 +196,7 @@ export function CircuitCanvas() {
         <Background gap={24} size={1} color="#c9d4e0" />
         <Controls />
         <MiniMap pannable zoomable />
+        <SchematicPngExportBridge circuitName={circuit.circuit_name} />
       </ReactFlow>
     </div>
   )
