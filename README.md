@@ -19,7 +19,8 @@ Genera schemi elettrici da linguaggio naturale, modifica manualmente componenti 
 - **Pin custom** a sinistra/destra, rinomina componenti, eliminazione componenti
 - **Salva / Carica progetto** (`.circuitllm.json`)
 - **Memoria progetto opzionale** con compaction LLM incrementale
-- **Export KiCad** netlist (`.net`)
+- **Export KiCad schema** (`.kicad_sch`) — bozza con tasselli generici + fili, da rifinire in KiCad
+- **Export KiCad** netlist (`.net`) — legacy/PCB, non apre l’editor schemi
 - **Export LLM** Markdown topologico (BOM, pin map, nets) per altri LLM / firmware
 - **Export PNG** dello schema completo (viewport React Flow)
 
@@ -156,9 +157,15 @@ Al reload, la memoria viene reiniettata nel prompt di sistema.
 
 ### 5. Export KiCad
 
-**Export KiCad (.net)** genera una netlist XML compatibile con KiCad (componenti + connessioni).
+**Export KiCad (.kicad_sch)** genera una **bozza di schema** apribile nell’editor schemi:
 
-> Nota: l'export produce una **netlist**, non un file schematico `.kicad_sch` completo.
+- simboli rettangolari generici (“tasselli”) con i pin del circuito
+- layout automatico (ELK) e fili ortogonali tra le net
+- footprint vuoti — li assegni tu in KiCad sostituendo i simboli
+
+> Idea: CircuitLLM mette i tasselli e le connessioni; in KiCad scegli i componenti/impronte reali.
+
+**Export KiCad (.net)** resta disponibile come netlist XML (flusso PCB/legacy). **Non** si importa come schema nell’editor schemi.
 
 ### 6. Export PNG
 
@@ -303,7 +310,8 @@ Copertura attuale (aree critiche):
 - fingerprint memoria (`src/utils/memoryFingerprint.ts`)
 - conversione circuito → graph (`src/utils/circuitToGraph.ts`)
 - layout ELK (`src/utils/elkLayout.ts`)
-- export KiCad (`src/utils/kicadExport.ts`)
+- export KiCad netlist (`src/utils/kicadExport.ts`)
+- export KiCad schema (`src/utils/kicadSchExport.ts`)
 - export PNG (`src/utils/pngExport.ts`)
 - export LLM Markdown (`src/utils/llmExport.ts`)
 - palette / preset / sample (`src/data/`)
@@ -324,7 +332,7 @@ Da definire. Aggiungere un file `LICENSE` prima della pubblicazione se necessari
 
 ## Roadmap (idee)
 
-- Export `.kicad_sch` completo
+- Export `.kicad_sch` completo (simboli libreria reali, non solo tasselli)
 - Autosave locale
 - Validazione elettrica base (pin power, net orphan)
 - Undo/redo canvas

@@ -77,7 +77,8 @@ Suite in `src/**/*.test.ts`. Aree coperte:
 | Geometria pin | `src/utils/pinGeometry.test.ts` |
 | Graph React Flow | `src/utils/circuitToGraph.test.ts` |
 | Layout ELK | `src/utils/elkLayout.test.ts` |
-| Export KiCad | `src/utils/kicadExport.test.ts` |
+| Export KiCad netlist | `src/utils/kicadExport.test.ts` |
+| Export KiCad schema | `src/utils/kicadSchExport.test.ts` |
 | Export PNG | `src/utils/pngExport.test.ts` |
 | Export LLM Markdown | `src/utils/llmExport.test.ts` |
 | Palette componenti | `src/data/componentPalette.test.ts` |

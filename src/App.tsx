@@ -7,6 +7,7 @@ import { useCircuitStore } from './store/circuitStore'
 import { useLlmStore } from './store/llmStore'
 import { buildDeltaContext } from './utils/diff'
 import { downloadKiCadNetlist } from './utils/kicadExport'
+import { downloadKicadSchematic } from './utils/kicadSchExport'
 import { downloadLlmCircuitMarkdown } from './utils/llmExport'
 import { downloadSchematicPng } from './utils/pngExport'
 import { downloadProjectFile, readProjectFile } from './utils/projectIO'
@@ -39,6 +40,7 @@ function App() {
   const [includeContext, setIncludeContext] = useState(loadIncludeContextPreference)
   const [savingProject, setSavingProject] = useState(false)
   const [exportingPng, setExportingPng] = useState(false)
+  const [exportingSch, setExportingSch] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const notifications = useCircuitStore((state) => state.notifications)
   const circuit = useCircuitStore((state) => state.circuit)
@@ -86,6 +88,20 @@ function App() {
       setProjectMessage(`Errore salvataggio: ${message}`)
     } finally {
       setSavingProject(false)
+    }
+  }
+
+  const handleExportKicadSch = async () => {
+    setExportingSch(true)
+    setProjectMessage(null)
+    try {
+      await downloadKicadSchematic(circuit)
+      setProjectMessage(`Schema KiCad esportato: ${circuit.circuit_name}.kicad_sch`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      setProjectMessage(`Errore export KiCad schema: ${message}`)
+    } finally {
+      setExportingSch(false)
     }
   }
 
@@ -174,7 +190,17 @@ function App() {
           <button
             type="button"
             className="app-shell__export"
+            onClick={() => void handleExportKicadSch()}
+            disabled={exportingSch}
+            title="Esporta bozza schema KiCad (.kicad_sch) con tasselli generici"
+          >
+            {exportingSch ? 'Export schema...' : 'Export KiCad (.kicad_sch)'}
+          </button>
+          <button
+            type="button"
+            className="app-shell__export"
             onClick={() => downloadKiCadNetlist(circuit)}
+            title="Netlist XML (legacy / PCB) — non apre lo schematic editor"
           >
             Export KiCad (.net)
           </button>
