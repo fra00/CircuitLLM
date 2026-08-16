@@ -122,15 +122,12 @@ function propertyBlock(
   y: number,
   hide = false,
 ): string {
-  const hideFlag = hide ? ' yes' : ' no'
   return [
     `    (property ${sexpString(name)} ${sexpString(value)}`,
     `      (at ${x} ${y} 0)`,
     `      (effects (font (size 1.27 1.27))${hide ? ' (hide yes)' : ''})`,
     `    )`,
   ].join('\n')
-  // hideFlag kept for clarity if we expand later
-  void hideFlag
 }
 
 function buildLibSymbol(component: Component): { lib: string; pins: PinPlacement[] } {
