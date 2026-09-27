@@ -97,6 +97,7 @@ REGOLE OBBLIGATORIE:
 2. Non includere MAI coordinate spaziali: nessun campo x, y, position, width, height. La disposizione sul foglio è calcolata da un componente automatico.
 3. Ogni componente deve avere almeno un pin. Pin id univoci all'interno del componente.
 4. Ogni net (rete) raggruppa 2 o piu' pin che devono essere elettricamente connessi. Usa nomi di rete significativi: suffisso _BUS per alimentazioni (es. 5V_BUS, GND_BUS), _SIGNAL per segnali (es. I2C_SDA).
+4b. UNA NET = UN NODO ELETTRICO. Non collassare segnali indipendenti nella stessa net: vietato mettere OUT1+OUT2 di un H-bridge (o entrambe le polarita' di un motore) sulla stessa net; vietato raggruppare GPIO distinti (es. D2+D4+D5) o IN1..IN4 insieme. Per un motore DC crea DUE net (es. MOTOR_L_A: OUT1↔P1 e MOTOR_L_B: OUT2↔P2). Per un bus di controllo crea una net per ogni coppia GPIO↔ingresso.
 5. Inserisci valori realistici dove ha senso (resistori, condensatori, alimentazioni) e kicad_symbol quando lo conosci.
 6. Includi sempre almeno una connessione di GND e una di alimentazione se il circuito ha componenti attivi.
 7. Tipi componenti ammessi: ${COMPONENT_TYPES}.

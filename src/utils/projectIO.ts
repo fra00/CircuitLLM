@@ -1,8 +1,9 @@
 import type { Circuit } from '../types/circuit'
 import type { ProjectMemory } from '../types/projectMemory'
+import type { WokwiPartChoice } from './wokwi/types'
 import { CircuitValidationError, normalizeCircuit } from './llm/validate'
 
-export const PROJECT_FILE_VERSION = 2
+export const PROJECT_FILE_VERSION = 3
 export const PROJECT_KIND = 'circuitllm-project'
 
 export interface CircuitProjectFile {
@@ -11,11 +12,14 @@ export interface CircuitProjectFile {
   savedAt: string
   circuit: Circuit
   memory?: ProjectMemory
+  /** Remembered Wokwi native vs custom chip choices (keyed by chip slug) */
+  wokwiChoices?: Record<string, WokwiPartChoice>
 }
 
 export interface LoadedProject {
   circuit: Circuit
   memory?: ProjectMemory
+  wokwiChoices?: Record<string, WokwiPartChoice>
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -31,6 +35,15 @@ function parseMemory(raw: unknown): ProjectMemory | undefined {
     typeof raw.sourceFingerprint === 'string' ? raw.sourceFingerprint : ''
   if (!summary) return undefined
   return { goal, summary, compactedAt, sourceFingerprint }
+}
+
+function parseWokwiChoices(raw: unknown): Record<string, WokwiPartChoice> | undefined {
+  if (!isRecord(raw)) return undefined
+  const out: Record<string, WokwiPartChoice> = {}
+  for (const [key, value] of Object.entries(raw)) {
+    if (value === 'native' || value === 'custom') out[key] = value
+  }
+  return Object.keys(out).length > 0 ? out : undefined
 }
 
 function toSafeFileName(name: string): string {
@@ -50,6 +63,7 @@ function toSafeFileName(name: string): string {
 export function buildProjectFile(
   circuit: Circuit,
   memory?: ProjectMemory,
+  wokwiChoices?: Record<string, WokwiPartChoice>,
 ): CircuitProjectFile {
   const project: CircuitProjectFile = {
     version: PROJECT_FILE_VERSION,
@@ -58,12 +72,15 @@ export function buildProjectFile(
     circuit,
   }
   if (memory) project.memory = memory
+  if (wokwiChoices && Object.keys(wokwiChoices).length > 0) {
+    project.wokwiChoices = wokwiChoices
+  }
   return project
 }
 
 /**
  * Parses and validates a project JSON document.
- * Accepts v2 wrapper, v1 wrapper, or a raw Circuit object.
+ * Accepts v2/v3 wrapper, v1 wrapper, or a raw Circuit object.
  */
 export function parseProjectFile(rawText: string): LoadedProject {
   let parsed: unknown
@@ -85,13 +102,18 @@ export function parseProjectFile(rawText: string): LoadedProject {
 
   const circuit = normalizeCircuit(circuitRaw, 'Loaded Circuit')
   const memory = parseMemory(parsed.memory)
+  const wokwiChoices = parseWokwiChoices(parsed.wokwiChoices)
 
-  return { circuit, memory }
+  return { circuit, memory, wokwiChoices }
 }
 
 /** Downloads the current circuit as a `.circuitllm.json` project file. */
-export function downloadProjectFile(circuit: Circuit, memory?: ProjectMemory): void {
-  const project = buildProjectFile(circuit, memory)
+export function downloadProjectFile(
+  circuit: Circuit,
+  memory?: ProjectMemory,
+  wokwiChoices?: Record<string, WokwiPartChoice>,
+): void {
+  const project = buildProjectFile(circuit, memory, wokwiChoices)
   const blob = new Blob([JSON.stringify(project, null, 2)], {
     type: 'application/json;charset=utf-8',
   })

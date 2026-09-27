@@ -23,6 +23,7 @@ Genera schemi elettrici da linguaggio naturale, modifica manualmente componenti 
 - **Export KiCad** netlist (`.net`) — legacy/PCB, non apre l’editor schemi
 - **Export LLM** Markdown topologico (BOM, pin map, nets) per altri LLM / firmware
 - **Export PNG** dello schema completo (viewport React Flow)
+- **Export Wokwi** (`.zip`) — `diagram.json` + custom chip (LLM o stub) per simulazione
 
 ## Screenshot
 
@@ -173,7 +174,19 @@ Al reload, la memoria viene reiniettata nel prompt di sistema.
 
 > Nota tecnica: l’export usa `html-to-image@1.11.11` (versione fissata): le release successive hanno un bug noto che omette i collegamenti SVG.
 
-### 7. Export LLM (.md)
+### 7. Export Wokwi
+
+**Export Wokwi** scarica uno ZIP di progetto simulabile:
+
+- `diagram.json` — parti native Wokwi quando riconosciute (Arduino Nano, resistore, LED, HC-SR04, …) e connessioni dalle net
+- layout posizioni via ELK (come per lo schema KiCad)
+- per componenti non nativi: file `{slug}.chip.json` + `{slug}.chip.c` generati dall’**LLM** configurato in ⚙ → LLM settings; senza API key → stub pinout
+- se un modulo ha **sia** parte nativa **sia** custom chip (es. buzzer, TM1637, HC-SR04), un dialog chiede componente per componente quale usare; la scelta è ricordata nel file progetto (`wokwiChoices`) e non viene riproposta
+- `sketch.ino` stub se c’è un MCU nativo, più `README.md` con istruzioni
+
+Apri lo ZIP su [wokwi.com](https://wokwi.com) (o VS Code + estensione Wokwi): i custom chip C vengono compilati in WASM da Wokwi.
+
+### 8. Export LLM (.md)
 
 **Export LLM (.md)** produce un Markdown **topologico** pensato per un altro LLM (es. generazione firmware):
 

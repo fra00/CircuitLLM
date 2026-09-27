@@ -81,6 +81,7 @@ Suite in `src/**/*.test.ts`. Aree coperte:
 | Export KiCad schema | `src/utils/kicadSchExport.test.ts` |
 | Export PNG | `src/utils/pngExport.test.ts` |
 | Export LLM Markdown | `src/utils/llmExport.test.ts` |
+| Export Wokwi | `src/utils/wokwi/circuitToDiagram.test.ts`, `src/utils/wokwi/exportZip.test.ts`, `src/utils/wokwi/nativeAlternatives.test.ts` |
 | Palette componenti | `src/data/componentPalette.test.ts` |
 | Provider presets | `src/data/providerPresets.test.ts` |
 | Sample circuit | `src/data/sampleCircuit.test.ts` |
