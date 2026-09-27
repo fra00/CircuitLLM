@@ -1,0 +1,80 @@
+.wokwi-choice__dialog {
+  max-width: 560px;
+}
+
+.wokwi-choice__intro {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #14273e;
+}
+
+.wokwi-choice__meta {
+  margin: 0;
+  font-size: 11px;
+  color: #57606a;
+}
+
+.wokwi-choice__meta code {
+  font-size: 10px;
+  background: #eef3f8;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.wokwi-choice__options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wokwi-choice__option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  color: #14273e;
+
+  &:hover {
+    border-color: #1e3a5f;
+    background: #eef3f8;
+  }
+}
+
+.wokwi-choice__option--native:hover {
+  border-color: #1a7f37;
+  background: #eaf7ee;
+}
+
+.wokwi-choice__option--custom:hover {
+  border-color: #0969da;
+  background: #eef6ff;
+}
+
+.wokwi-choice__option-title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wokwi-choice__option code {
+  font-size: 11px;
+  color: #57606a;
+}
+
+.wokwi-choice__option-desc {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #3d4f63;
+}
+
+.wokwi-choice__hint {
+  margin: 0;
+  font-size: 11px;
+  color: #6e7781;
+}

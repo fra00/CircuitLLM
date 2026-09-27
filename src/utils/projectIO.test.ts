@@ -10,7 +10,7 @@ import {
 import { makeTestCircuit } from '../test/fixtures'
 
 describe('buildProjectFile', () => {
-  it('builds v2 project wrapper', () => {
+  it('builds v3 project wrapper', () => {
     const circuit = makeTestCircuit()
     const project = buildProjectFile(circuit)
     expect(project.version).toBe(PROJECT_FILE_VERSION)
@@ -28,6 +28,17 @@ describe('buildProjectFile', () => {
     }
     const project = buildProjectFile(makeTestCircuit(), memory)
     expect(project.memory).toEqual(memory)
+  })
+
+  it('includes wokwiChoices when provided', () => {
+    const project = buildProjectFile(makeTestCircuit(), undefined, {
+      buzzer: 'native',
+      '7-segment-display': 'custom',
+    })
+    expect(project.wokwiChoices).toEqual({
+      buzzer: 'native',
+      '7-segment-display': 'custom',
+    })
   })
 })
 
@@ -50,6 +61,19 @@ describe('parseProjectFile', () => {
     expect(loaded.circuit.circuit_name).toBe('Test Circuit')
     expect(loaded.memory?.goal).toBe('Test goal')
     expect(loaded.memory?.summary).toBe('Summary line')
+  })
+
+  it('parses wokwiChoices from v3 project', () => {
+    const circuit = makeTestCircuit()
+    const raw = JSON.stringify({
+      version: 3,
+      kind: PROJECT_KIND,
+      savedAt: '2026-01-01T00:00:00.000Z',
+      circuit,
+      wokwiChoices: { buzzer: 'native', motor: 'nope' },
+    })
+    const loaded = parseProjectFile(raw)
+    expect(loaded.wokwiChoices).toEqual({ buzzer: 'native' })
   })
 
   it('parses raw circuit object (legacy)', () => {

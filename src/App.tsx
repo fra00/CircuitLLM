@@ -3,14 +3,23 @@ import './App.css'
 import { CircuitCanvas } from './components/CircuitCanvas'
 import { LLMPanel } from './components/LLMPanel'
 import { LLMSettingsDialog } from './components/LLMSettingsDialog'
+import { WokwiChoiceDialog } from './components/WokwiChoiceDialog'
 import { useCircuitStore } from './store/circuitStore'
 import { useLlmStore } from './store/llmStore'
+import { useWokwiStore } from './store/wokwiStore'
 import { buildDeltaContext } from './utils/diff'
 import { downloadKiCadNetlist } from './utils/kicadExport'
 import { downloadKicadSchematic } from './utils/kicadSchExport'
 import { downloadLlmCircuitMarkdown } from './utils/llmExport'
 import { downloadSchematicPng } from './utils/pngExport'
 import { downloadProjectFile, readProjectFile } from './utils/projectIO'
+import { downloadWokwiProject } from './utils/wokwi/exportZip'
+import {
+  analyzeCircuitChoices,
+  pendingWokwiChoices,
+  type WokwiComponentAnalysis,
+  type WokwiPartChoice,
+} from './utils/wokwi/nativeAlternatives'
 import {
   PALETTE_LABELS,
   PALETTE_ORDER,
@@ -41,6 +50,9 @@ function App() {
   const [savingProject, setSavingProject] = useState(false)
   const [exportingPng, setExportingPng] = useState(false)
   const [exportingSch, setExportingSch] = useState(false)
+  const [exportingWokwi, setExportingWokwi] = useState(false)
+  const [wokwiQueue, setWokwiQueue] = useState<WokwiComponentAnalysis[]>([])
+  const [wokwiQueueIndex, setWokwiQueueIndex] = useState(0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const notifications = useCircuitStore((state) => state.notifications)
   const circuit = useCircuitStore((state) => state.circuit)
@@ -54,6 +66,11 @@ function App() {
   const prepareMemoryForSave = useLlmStore((state) => state.prepareMemoryForSave)
   const memory = useLlmStore((state) => state.memory)
   const goal = useLlmStore((state) => state.goal)
+  const llmConfig = useLlmStore((state) => state.config)
+  const wokwiChoices = useWokwiStore((state) => state.choices)
+  const setWokwiChoice = useWokwiStore((state) => state.setChoice)
+  const setWokwiChoices = useWokwiStore((state) => state.setChoices)
+  const clearWokwiChoices = useWokwiStore((state) => state.clearChoices)
 
   const pendingContext = buildDeltaContext(notifications)
 
@@ -70,17 +87,18 @@ function App() {
     setSavingProject(true)
     setProjectMessage(null)
     try {
+      const choices = useWokwiStore.getState().choices
       if (includeContext) {
         setProjectMessage('Compacting context...')
         const { memory, skipped } = await prepareMemoryForSave(circuit)
-        downloadProjectFile(circuit, memory)
+        downloadProjectFile(circuit, memory, choices)
         setProjectMessage(
           skipped
             ? `Progetto salvato (contesto invariato): ${circuit.circuit_name}`
             : `Progetto salvato con contesto: ${circuit.circuit_name}`,
         )
       } else {
-        downloadProjectFile(circuit)
+        downloadProjectFile(circuit, undefined, choices)
         setProjectMessage(`Progetto salvato: ${circuit.circuit_name}`)
       }
     } catch (error) {
@@ -119,6 +137,70 @@ function App() {
     }
   }
 
+  const runWokwiExport = async (choices: Record<string, WokwiPartChoice>) => {
+    setExportingWokwi(true)
+    setProjectMessage('Export Wokwi…')
+    try {
+      const result = await downloadWokwiProject(
+        circuit,
+        llmConfig,
+        (progress) => {
+          if (progress.message) setProjectMessage(progress.message)
+        },
+        choices,
+      )
+      const warn =
+        result.warnings.length > 0
+          ? ` (${result.warnings.length} avviso/i — vedi README nello ZIP)`
+          : ''
+      setProjectMessage(`Wokwi esportato: ${result.fileName}${warn}`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      setProjectMessage(`Errore export Wokwi: ${message}`)
+    } finally {
+      setExportingWokwi(false)
+    }
+  }
+
+  const handleExportWokwi = () => {
+    const analyses = analyzeCircuitChoices(circuit.components)
+    const pending = pendingWokwiChoices(analyses, wokwiChoices)
+    if (pending.length > 0) {
+      setWokwiQueue(pending)
+      setWokwiQueueIndex(0)
+      setProjectMessage(
+        `Export Wokwi: scegli nativo o custom per ${pending.length} componente/i…`,
+      )
+      return
+    }
+    void runWokwiExport(wokwiChoices)
+  }
+
+  const handleWokwiChoice = (choice: WokwiPartChoice) => {
+    const current = wokwiQueue[wokwiQueueIndex]
+    if (!current) return
+    setWokwiChoice(current.preferenceKey, choice)
+    const nextIndex = wokwiQueueIndex + 1
+    if (nextIndex < wokwiQueue.length) {
+      setWokwiQueueIndex(nextIndex)
+      return
+    }
+    setWokwiQueue([])
+    setWokwiQueueIndex(0)
+    const merged = {
+      ...useWokwiStore.getState().choices,
+      [current.preferenceKey]: choice,
+    }
+    void runWokwiExport(merged)
+  }
+
+  const handleWokwiChoiceCancel = () => {
+    setWokwiQueue([])
+    setWokwiQueueIndex(0)
+    setExportingWokwi(false)
+    setProjectMessage('Export Wokwi annullato.')
+  }
+
   const handleLoadProjectClick = () => {
     fileInputRef.current?.click()
   }
@@ -135,6 +217,11 @@ function App() {
       } else {
         resetSessionMemory()
         setConversationActive(true)
+      }
+      if (loaded.wokwiChoices) {
+        setWokwiChoices(loaded.wokwiChoices)
+      } else {
+        clearWokwiChoices()
       }
       setProjectMessage(
         loaded.memory
@@ -225,6 +312,15 @@ function App() {
             title="Esporta lo schema completo come immagine PNG"
           >
             {exportingPng ? 'Export PNG...' : 'Export PNG'}
+          </button>
+          <button
+            type="button"
+            className="app-shell__export"
+            onClick={handleExportWokwi}
+            disabled={exportingWokwi}
+            title="Esporta progetto Wokwi (diagram.json + custom chip via LLM)"
+          >
+            {exportingWokwi ? 'Export Wokwi...' : 'Export Wokwi'}
           </button>
           <div className="app-shell__menu-wrap">
             <button
@@ -357,6 +453,14 @@ function App() {
           setLlmSettingsOpen(false)
           setToolbarMenuOpen(false)
         }}
+      />
+      <WokwiChoiceDialog
+        open={wokwiQueue.length > 0}
+        item={wokwiQueue[wokwiQueueIndex] ?? null}
+        index={wokwiQueueIndex + 1}
+        total={wokwiQueue.length}
+        onChoose={handleWokwiChoice}
+        onCancel={handleWokwiChoiceCancel}
       />
     </div>
   )
